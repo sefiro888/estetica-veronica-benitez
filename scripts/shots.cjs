@@ -13,6 +13,7 @@ const views = [['d', { width: 1440, height: 900 }, false], ['m', { width: 390, h
   const browser = await chromium.launch();
   for (const file of pages) for (const [name, vp, mobile] of views) {
     const page = await browser.newPage({ viewport: vp, isMobile: mobile, hasTouch: mobile, deviceScaleFactor: 1 });
+    await page.addInitScript(() => { try { sessionStorage.setItem('vb-intro', '1'); } catch (e) {} });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', m => m.type() === 'error' && !/maps|google|ERR_|favicon/i.test(m.text()) && errors.push(m.text()));

@@ -174,8 +174,26 @@ def og():
     base.save(d / "og.jpg", quality=86)
 
 
+def antes_despues():
+    """Parejas _fuentes/antes-despues/<id>-antes.* + <id>-despues.* -> mismo tamaño, webp."""
+    src = SRC / "antes-despues"
+    dst = OUT / "antes-despues"
+    for a in sorted(src.glob("*-antes.*")):
+        clave = a.stem[:-len("-antes")]
+        d = next(src.glob(f"{clave}-despues.*"), None)
+        if not d:
+            continue
+        ia = retoca(ImageOps.exif_transpose(Image.open(a)).convert("RGB"))
+        ib = retoca(ImageOps.exif_transpose(Image.open(d)).convert("RGB"))
+        w = min(1200, ia.width)
+        ia = ia.resize((w, round(ia.height * w / ia.width)), Image.LANCZOS)
+        ib = ImageOps.fit(ib, ia.size, Image.LANCZOS)
+        guarda(ia, dst / f"{clave}-antes.webp", 84)
+        guarda(ib, dst / f"{clave}-despues.webp", 84)
+
+
 if __name__ == "__main__":
+    antes_despues()
     fotos()
     heroes()
-    og()
-    print("listo")
+    print("listo · la imagen para compartir la genera scripts/iconos.py")

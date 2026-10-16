@@ -209,3 +209,73 @@
     try { await navigator.clipboard.writeText(b.dataset.copy); const t = b.textContent; b.textContent = "¡Copiada!"; setTimeout(() => b.textContent = t, 1800); } catch (_) { }
   }));
 })();
+
+/* Estética Verónica Benítez · mejoras: intro, parpadeo, antes/después, vídeos y transiciones */
+(() => {
+  "use strict";
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- intro con el logo (solo la primera página de cada visita) ---------- */
+  const intro = $("[data-intro]");
+  if (intro) {
+    let visto = false;
+    try { visto = sessionStorage.getItem("vb-intro") === "1"; sessionStorage.setItem("vb-intro", "1"); } catch (_) { visto = true; }
+    if (visto || reduce) intro.remove();
+    else {
+      document.documentElement.classList.add("js-intro");
+      setTimeout(() => $(".splash-logo", intro)?.classList.add("parpadea"), 700);
+      setTimeout(() => intro.classList.add("is-out"), 1750);
+      setTimeout(() => intro.remove(), 2600);
+    }
+  }
+
+  /* ---------- parpadeo del logo de la cabecera ---------- */
+  const marca = $(".brand-logo");
+  function parpadea(el) {
+    if (!el || reduce) return;
+    el.classList.remove("parpadea"); void el.getBoundingClientRect(); el.classList.add("parpadea");
+    setTimeout(() => el.classList.remove("parpadea"), 1200);
+  }
+  setTimeout(() => parpadea(marca), intro && intro.isConnected ? 2300 : 600);
+  setInterval(() => { if (!document.hidden) parpadea(marca); }, 9000);
+
+  /* ---------- comparador antes / después ---------- */
+  $$("[data-ba]").forEach(ba => {
+    const r = $(".ba-range", ba);
+    const pon = v => ba.style.setProperty("--pos", v + "%");
+    r.addEventListener("input", () => { ba.classList.remove("is-hint"); pon(r.value); });
+    if ("IntersectionObserver" in window && !reduce) {
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (e.isIntersecting) { ba.classList.add("is-hint"); setTimeout(() => ba.classList.remove("is-hint"), 3200); io.unobserve(ba); }
+      }), { threshold: .6 });
+      io.observe(ba);
+    }
+  });
+
+  /* ---------- vídeos: reproducir solo cuando se ven ---------- */
+  const vids = $$("video[data-autoplay]");
+  if ("IntersectionObserver" in window) {
+    const iov = new IntersectionObserver(es => es.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting && !reduce) { if (v.preload === "none") v.preload = "auto"; v.play().catch(() => {}); }
+      else v.pause();
+    }), { threshold: .35 });
+    vids.forEach(v => iov.observe(v));
+  }
+
+  /* ---------- transición de salida (navegadores sin View Transitions) ---------- */
+  if (!("onpagereveal" in window) && !reduce) {
+    document.addEventListener("click", e => {
+      const a = e.target.closest("a[href]");
+      if (!a || a.target === "_blank" || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname === location.pathname || !/\.html$|\/$/.test(url.pathname)) return;
+      e.preventDefault();
+      document.body.classList.add("is-leaving");
+      setTimeout(() => { location.href = a.href; }, 220);
+    });
+    addEventListener("pageshow", () => document.body.classList.remove("is-leaving"));
+  }
+})();

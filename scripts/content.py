@@ -961,3 +961,52 @@ QUIZ = [
     ("Necesito relajarme", ["tratamientos-corporales", "parafina"]),
     ("Tengo una boda", ["maquillaje", "lifting-pestanas", "manicura"]),
 ]
+
+# ---------------------------------------------------------------------------
+# MODO DEMO
+# True  -> se ven los huecos preparados y las explicaciones para Verónica
+#          (fotos de antes/después, retratos del equipo…)
+# False -> versión final: los huecos sin foto desaparecen
+# ---------------------------------------------------------------------------
+MODO_DEMO = True
+
+# Comparadores antes/después: servicio -> prefijo de las fotos en
+# _fuentes/antes-despues/<prefijo>-<n>-antes.jpg / -despues.jpg
+COMPARA = {
+    "microblading": "microblading",
+    "lifting-pestanas": "lifting",
+    "cejas": "cejas",
+    "manicura": "manicura",
+    "acrygel": "acrygel",
+    "tratamientos-faciales": "facial",
+    "depilacion-laser": "laser",
+}
+TITULOS_AD = {
+    "microblading-1": "Reconstrucción pelo a pelo",
+    "microblading-2": "Relleno de zonas despobladas",
+    "microblading-3": "Diseño, forma y densidad",
+}
+
+# Vídeos (reels de @verobenitezc, sin audio y en bucle)
+REELS = [
+    ("reel-semi-azul", "Semipermanente con efecto cristal", "https://www.instagram.com/reel/DTBcQVSiHCM/"),
+    ("reel-lunares-fucsia", "Lunares y fucsia de verano", "https://www.instagram.com/reel/DZI0KLsRxRx/"),
+    ("reel-copos-azul", "Copos de nieve a mano alzada", "https://www.instagram.com/reel/DSTGYL-CKD5/"),
+    ("reel-lunares-verde", "Animal print turquesa y negro", "https://www.instagram.com/reel/Da1A8xSx34c/"),
+    ("reel-coleccion", "Una mañana en cabina", "https://www.instagram.com/reel/DcT5NQLoc5z/"),
+]
+VIDEO_SERVICIO = {"manicura": "reel-semi-azul", "nail-art": "reel-lunares-fucsia", "acrygel": "reel-acry-rosa"}
+
+# Equipo. «foto» busca assets/img/equipo/<foto>.webp (o _fuentes/equipo/<foto>.jpg).
+# Si no existe y MODO_DEMO está activo, se muestra el hueco preparado.
+EQUIPO = [
+    {"foto": "veronica", "nombre": "Verónica Benítez", "puesto": "Fundadora · Técnica en Estética Integral y Decorativa",
+     "texto": "Detrás de cada cita está Verónica: la que diseña cejas, levanta pestañas y no deja salir a nadie sin las uñas perfectas. Muchas clientas llevan con ella casi una década.",
+     "tags": ["Microblading", "Lifting de pestañas", "Uñas y nail art", "Faciales"]},
+    {"foto": "equipo-2", "nombre": "", "puesto": "Compañera del equipo",
+     "texto": "Las clientas hablan de «las chicas» en sus reseñas: amables, detallistas y muy profesionales. Aquí irá la presentación de cada compañera.",
+     "tags": []},
+    {"foto": "equipo-3", "nombre": "", "puesto": "Compañera del equipo",
+     "texto": "Nombre, especialidades y una frase suya. Una foto real del equipo genera muchísima confianza.",
+     "tags": []},
+]

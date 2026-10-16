@@ -13,9 +13,14 @@ from urllib.parse import quote
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from content import (NEGOCIO as N, HORARIO, DIAS, RESENAS, CATEGORIAS, FRASES,  # noqa: E402
-                     SERVICIOS, SERV, FAQ_GENERAL, QUIZ)
+                     SERVICIOS, SERV, FAQ_GENERAL, QUIZ, MODO_DEMO, COMPARA, TITULOS_AD,
+                     REELS, VIDEO_SERVICIO, EQUIPO)
 
-VERSION = "2"
+LOGO = json.loads((ROOT / "scripts" / "_logo_partes.json").read_text(encoding="utf-8"))
+AD = ROOT / "assets" / "img" / "antes-despues"
+EQ = ROOT / "assets" / "img" / "equipo"
+
+VERSION = "3"
 IA = ROOT / "assets" / "img" / "ia"
 e = escape
 MSG = "¡Hola Vero! Me gustaría pedir cita."
@@ -128,8 +133,7 @@ def header(activo):
 <header class="site-header" data-header>
   <div class="wrap header-in">
     <a href="index.html" class="brand" aria-label="Estética Verónica Benítez · inicio">
-      <img src="assets/img/brand/ojo-claro.png" alt="" class="brand-logo" width="64" height="44">
-      <span class="brand-txt"><span class="brand-name">Verónica Benítez</span><span class="brand-sub">Estética · Huelva</span></span>
+      {logo_svg("brand-logo")}
     </a>
     <nav class="nav" aria-label="Principal">
       {a('index.html', 'Inicio', 'inicio')}
@@ -140,6 +144,7 @@ def header(activo):
       <div class="nav-item has-drop">
         <button class="nav-link nav-btn" aria-expanded="false" aria-controls="drop-centro"{' aria-current="page"' if activo == 'centro' else ''}>El centro <span class="chev"></span></button>
         <div class="drop" id="drop-centro">
+          <a href="nosotras.html"><strong>Verónica y su equipo</strong><span>Quién te cuida</span></a>
           <a href="el-centro.html"><strong>Nuestro salón</strong><span>Pequeñito pero muy acogedor</span></a>
           <a href="galeria.html"><strong>Galería de trabajos</strong><span>Uñas, pestañas y cejas reales</span></a>
           <a href="opiniones.html"><strong>Opiniones</strong><span>5,0 ★ en Google</span></a>
@@ -175,7 +180,7 @@ def menu_movil():
   <div class="mmenu-bg"></div>
   <div class="mmenu-in">
     <div class="mmenu-top">
-      <img src="assets/img/brand/logo-claro.png" alt="Estética Verónica Benítez" class="mmenu-logo">
+      <img src="assets/img/brand/logo-claro.svg" alt="Estética Verónica Benítez" class="mmenu-logo">
       <button class="mmenu-close" data-close aria-label="Cerrar menú">{ico('x')}</button>
     </div>
     <p class="estado estado--menu" data-estado><span class="dot"></span><span class="estado-txt">Consultando horario…</span></p>
@@ -183,12 +188,13 @@ def menu_movil():
       <a href="index.html" class="mm-link"><em>01</em>Inicio</a>
       <a href="servicios.html" class="mm-link"><em>02</em>Todos los servicios</a>
       {grupos}
-      <a href="el-centro.html" class="mm-link"><em>03</em>El centro</a>
-      <a href="galeria.html" class="mm-link"><em>04</em>Galería</a>
-      <a href="opiniones.html" class="mm-link"><em>05</em>Opiniones</a>
-      <a href="tarjeta-regalo.html" class="mm-link"><em>06</em>Tarjeta regalo</a>
-      <a href="ubicacion.html" class="mm-link"><em>07</em>Cómo llegar</a>
-      <a href="contacto.html" class="mm-link"><em>08</em>Contacto y cita</a>
+      <a href="nosotras.html" class="mm-link"><em>03</em>Verónica y su equipo</a>
+      <a href="el-centro.html" class="mm-link"><em>04</em>El centro</a>
+      <a href="galeria.html" class="mm-link"><em>05</em>Galería</a>
+      <a href="opiniones.html" class="mm-link"><em>06</em>Opiniones</a>
+      <a href="tarjeta-regalo.html" class="mm-link"><em>07</em>Tarjeta regalo</a>
+      <a href="ubicacion.html" class="mm-link"><em>08</em>Cómo llegar</a>
+      <a href="contacto.html" class="mm-link"><em>09</em>Contacto y cita</a>
     </nav>
     <div class="mm-actions">
       <a class="btn btn-rose" href="{wa(MSG)}" target="_blank" rel="noopener">{ico('wa')} WhatsApp</a>
@@ -375,7 +381,7 @@ def cta_final(texto="¿Te reservamos un ratito?", sub="Escríbenos por WhatsApp 
 <section class="cta-final">
   <div class="cta-bg" style="background-image:url('assets/img/hero/contacto-1920.webp')"></div>
   <div class="wrap cta-in">
-    <img src="assets/img/brand/logo-claro.png" alt="" class="cta-logo" loading="lazy">
+    <img src="assets/img/brand/logo-claro.svg" alt="" class="cta-logo" loading="lazy">
     <h2 class="h2">{texto}</h2>
     <p class="lead lead--light">{sub}</p>
     <div class="btn-row center">
@@ -393,7 +399,7 @@ def footer():
   <div class="gold-line" aria-hidden="true"></div>
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <img src="assets/img/brand/logo-claro.png" alt="Estética Verónica Benítez" class="footer-logo" loading="lazy">
+      <img src="assets/img/brand/logo-claro.svg" alt="Estética Verónica Benítez" class="footer-logo" loading="lazy">
       <p>Salón de estética integral y decorativa en Huelva. Pequeñito pero muy acogedor: uñas, mirada, depilación, faciales y maquillaje con trato cercano y personalizado.</p>
       <div class="footer-social">
         <a href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Instagram">{ico('ig')}</a>
@@ -410,7 +416,7 @@ def footer():
       <p><a href="{wa('¡Hola Vero!')}" target="_blank" rel="noopener">{N['movil']}</a> · <a href="tel:{N['tel_fijo_href']}">{N['tel_fijo']}</a></p>
       <p class="f-hours">L y V · 10–14<br>M y J · 10–14 y 16:30–20:30<br>X · 16:30–20:30<br>S y D · cerrado</p>
       <p class="f-title mt">El centro</p>
-      <ul><li><a href="el-centro.html">Nuestro salón</a></li><li><a href="galeria.html">Galería</a></li><li><a href="opiniones.html">Opiniones</a></li><li><a href="tarjeta-regalo.html">Tarjeta regalo</a></li></ul>
+      <ul><li><a href="nosotras.html">Verónica y su equipo</a></li><li><a href="el-centro.html">Nuestro salón</a></li><li><a href="galeria.html">Galería</a></li><li><a href="opiniones.html">Opiniones</a></li><li><a href="tarjeta-regalo.html">Tarjeta regalo</a></li></ul>
     </div>
   </div>
   <div class="wrap footer-bottom">
@@ -445,8 +451,14 @@ def pagina(archivo, titulo, desc, activo, cuerpo, og="assets/img/brand/og.jpg", 
 <meta property="og:title" content="{e(titulo)}">
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:image" content="{og}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="assets/img/brand/favicon.png" type="image/png">
+<link rel="icon" href="assets/img/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/img/brand/favicon.png" type="image/png" sizes="64x64">
+<link rel="manifest" href="site.webmanifest">
+<meta name="view-transition" content="same-origin">
+<script>try{{if(sessionStorage.getItem("vb-intro")!=="1"&&!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("js-intro")}}catch(e){{}}</script>
 <link rel="apple-touch-icon" href="assets/img/brand/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -455,6 +467,7 @@ def pagina(archivo, titulo, desc, activo, cuerpo, og="assets/img/brand/og.jpg", 
 {ld}
 </head>
 <body data-page="{activo}">
+{intro()}
 {header(activo)}
 <main id="main">
 {cuerpo}
@@ -482,6 +495,152 @@ JSONLD_NEGOCIO = {
         {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday", "Wednesday", "Thursday"], "opens": "16:30", "closes": "20:30"}],
     "sameAs": [N["instagram"], N["facebook"]],
 }
+
+
+# ------------------------------------------------------------------ logo vectorial
+def logo_svg(cls="logo-svg", marco=False, ojo_solo=False):
+    """Logo original vectorizado, en línea para poder animar el parpadeo."""
+    ojo_ = (f'<g class="lg-ceja">{LOGO["ceja"]}</g><g class="lg-parpado">{LOGO["parpado"]}</g>'
+            f'<g class="lg-pestanas">{LOGO["pestanas"]}</g>')
+    if ojo_solo:
+        box, cuerpo = LOGO["ojo_box"], ojo_
+    elif marco:
+        box, cuerpo = LOGO["full_box"], f'<g class="lg-marco">{LOGO["marco"]}</g><g class="lg-texto">{LOGO["texto"]}</g>{ojo_}'
+    else:
+        box, cuerpo = LOGO["sin_marco_box"], f'<g class="lg-texto">{LOGO["texto"]}</g>{ojo_}'
+    return (f'<svg class="{cls}" viewBox="{" ".join(map(str, box))}" fill="currentColor" role="img" '
+            f'aria-label="Estética Verónica Benítez">{cuerpo}</svg>')
+
+
+def intro():
+    return f'<div class="splash" data-intro aria-hidden="true"><div class="splash-in">{logo_svg("splash-logo")}<span class="splash-line"></span></div></div>'
+
+
+# ------------------------------------------------------------------ antes / después
+def pares(prefijo):
+    if not AD.exists():
+        return []
+    out = []
+    for a in sorted(AD.glob(f"{prefijo}-*-antes.webp")):
+        clave = a.name[:-len("-antes.webp")]
+        if (AD / f"{clave}-despues.webp").exists():
+            out.append(clave)
+    return out
+
+
+def slider(clave, titulo=""):
+    a, d = f"assets/img/antes-despues/{clave}-antes.webp", f"assets/img/antes-despues/{clave}-despues.webp"
+    cap = f'<figcaption>{e(titulo)}</figcaption>' if titulo else ''
+    return f"""
+<figure class="ba-slider reveal" data-ba style="--pos:50%">
+  <img src="{d}" alt="Después · {e(titulo)}" loading="lazy" class="ba-img">
+  <div class="ba-antes"><img src="{a}" alt="Antes · {e(titulo)}" loading="lazy" class="ba-img"></div>
+  <span class="ba-lbl ba-lbl--a">Antes</span><span class="ba-lbl ba-lbl--d">Después</span>
+  <span class="ba-handle" aria-hidden="true"><i>{ico('flecha', 'ico flip')}{ico('flecha')}</i></span>
+  <input type="range" min="0" max="100" value="50" class="ba-range" aria-label="Desliza para comparar antes y después">
+  {cap}
+</figure>"""
+
+
+def hueco_ad(servicio):
+    return f"""
+<figure class="ba-slot reveal">
+  <div class="ba-slot-in">
+    <span class="ba-slot-half"><b>Antes</b><small>Tu foto real</small></span>
+    <span class="ba-slot-half"><b>Después</b><small>El resultado</small></span>
+    <span class="ba-slot-bar"><i>{ico('flecha', 'ico flip')}{ico('flecha')}</i></span>
+  </div>
+  <figcaption>{ojo('ba-slot-ojo')}Espacio preparado · {e(servicio)}</figcaption>
+</figure>"""
+
+
+def guia_fotos(abierta=False):
+    return f"""
+<details class="guia"{' open' if abierta else ''}>
+  <summary><span class="guia-ico">{ico('chispa')}</span><span><strong>Verónica: este espacio está preparado para tus fotos de antes y después</strong>
+  <small>Cuando nos las pases, aparecerán aquí con un deslizador para comparar. Toca para ver cómo hacerlas.</small></span><span class="faq-ico">{ico('mas')}</span></summary>
+  <div class="guia-in">
+    <ol class="guia-pasos">
+      <li><b>Pide permiso por escrito a la clienta.</b> Es obligatorio para publicar su imagen (derecho a la propia imagen y protección de datos). Te preparamos un modelo sencillo de autorización: nombre, servicio, uso en web y redes y firma. Puede retirarlo cuando quiera.</li>
+      <li><b>Misma luz, mismo encuadre.</b> Haz el «antes» y el «después» desde la misma posición y distancia, con luz natural o la de cabina, y sin filtros.</li>
+      <li><b>Solo la zona, si lo prefiere.</b> Si la clienta no quiere salir entera, encuadra solo ojos, cejas, manos o piel. Con la placa del logo, como haces con las uñas, queda perfecto.</li>
+      <li><b>Las dos fotos con el mismo formato.</b> Vertical u horizontal, pero igual en ambas. Mejor con el modo normal de la cámara (no retrato) y la lente limpia.</li>
+      <li><b>Envíalas como «documento» por WhatsApp</b> para que no pierdan calidad, indicando el servicio: lifting, cejas, microblading, uñas, facial o láser.</li>
+    </ol>
+    <p class="guia-nota">{ico('check')} Nosotros las retocamos ligeramente (luz y color, sin alterar el resultado), las igualamos y las publicamos en el servicio correspondiente.</p>
+  </div>
+</details>"""
+
+
+def comparador(slug, titulo_sec="Antes y después", sub=""):
+    prefijo = COMPARA.get(slug)
+    if not prefijo:
+        return ""
+    reales = pares(prefijo)
+    if not reales and not MODO_DEMO:
+        return ""
+    serv = SERV[slug]["nombre"] if slug in SERV else ""
+    items = "".join(slider(c, TITULOS_AD.get(c, "")) for c in reales[:3])
+    if MODO_DEMO and not reales:
+        items += hueco_ad(serv) + hueco_ad(serv)
+    sub = sub or ("Desliza sobre cada foto para comparar. Resultados reales de clientas." if reales
+                  else "Aquí verás resultados reales de clientas con un deslizador para comparar el antes y el después.")
+    return f"""
+<section class="section section--blush" id="antes-despues" aria-labelledby="t-ad-{slug}">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">Resultados reales</p><h2 id="t-ad-{slug}" class="h2">{titulo_sec}</h2><p class="lead">{e(sub)}</p></div>
+    <div class="ba-grid ba-grid--{len(reales[:3]) or 2}">{items}</div>
+    {guia_fotos(abierta=not reales) if MODO_DEMO else ''}
+  </div>
+</section>"""
+
+
+# ------------------------------------------------------------------ fotos de equipo
+def foto_equipo(clave):
+    for ext in ("webp", "jpg", "png"):
+        if (EQ / f"{clave}.{ext}").exists():
+            return f"assets/img/equipo/{clave}.{ext}"
+    return None
+
+
+def hueco_retrato(texto="Tu retrato aquí"):
+    return f"""
+<div class="retrato-slot">
+  {logo_svg('retrato-logo', ojo_solo=True)}
+  <strong>{e(texto)}</strong>
+  <small>Espacio preparado para una foto real</small>
+</div>"""
+
+
+# ------------------------------------------------------------------ vídeos
+def video(nombre, cls="vid", caption="", enlace=""):
+    pie = ""
+    if caption:
+        ig = f'<a href="{enlace}" target="_blank" rel="noopener" aria-label="Ver en Instagram">{ico("ig")}</a>' if enlace else ""
+        pie = f"<figcaption><span>{e(caption)}</span>{ig}</figcaption>"
+    return f"""
+<figure class="{cls}">
+  <video muted loop playsinline preload="none" poster="assets/video/{nombre}.webp" data-autoplay aria-label="{e(caption or 'Vídeo de Estética Verónica Benítez')}">
+    <source src="assets/video/{nombre}.mp4" type="video/mp4">
+  </video>
+  {pie}
+</figure>"""
+
+
+def seccion_reels():
+    vids = "".join(video(n, "reel reveal", c, u) for n, c, u in REELS)
+    return f"""
+<section class="section section--ink reels-sec" aria-labelledby="t-reels">
+  <div class="wrap">
+    <div class="sec-head sec-head--row">
+      <div><p class="eyebrow eyebrow--light">En movimiento</p><h2 id="t-reels" class="h2">Así trabajamos, en directo</h2>
+      <p class="lead lead--light">Reels de nuestro Instagram: uñas recién terminadas, efectos que solo se aprecian en movimiento y el día a día en cabina.</p></div>
+      <a class="btn btn-ghost-light" href="{N['instagram']}" target="_blank" rel="noopener">{ico('ig')} Ver más reels</a>
+    </div>
+    <p class="swipe-hint">Desliza {ico('flecha')}</p>
+    <div class="reels">{vids}</div>
+  </div>
+</section>"""
 
 
 # ------------------------------------------------------------------ asistente de cita
@@ -532,6 +691,9 @@ def pagina_servicio(s):
     toc_items = [("que-es", "Qué es"), ("beneficios", "Beneficios"), ("para-quien", "Para quién"), ("pasos", "La sesión"), ("opciones", "Opciones")]
     if s["galeria"]:
         toc_items.append(("trabajos", "Trabajos"))
+    comp = comparador(s["slug"])
+    if comp:
+        toc_items.append(("antes-despues", "Antes y después"))
     toc_items.append(("cuidados", "Cuidados"))
     if s["mitos"]:
         toc_items.append(("mitos", "Mitos"))
@@ -606,7 +768,7 @@ def pagina_servicio(s):
       <blockquote class="pull">{e(s['destacado'])}</blockquote>
     </div>
     <div class="split-media reveal">
-      <figure class="frame"><img src="{foto(img_lat)}" alt="{e(s['nombre'])} en Estética Verónica Benítez" loading="lazy"></figure>
+      {video(VIDEO_SERVICIO[s["slug"]], "frame frame--video") if s["slug"] in VIDEO_SERVICIO else f'<figure class="frame"><img src="{foto(img_lat)}" alt="{e(s["nombre"])} en Estética Verónica Benítez" loading="lazy"></figure>'}
       <figure class="review review--mini">
         {estrellas(n)}<blockquote>«{e(txt)}»</blockquote><figcaption><strong>{e(autor)}</strong> · <small>Reseña en {e(fuente)}</small></figcaption>
       </figure>
@@ -645,6 +807,7 @@ def pagina_servicio(s):
   </div>
 </section>
 {gal}
+{comp}
 <section class="section" id="cuidados" aria-labelledby="t-cuid">
   <div class="wrap split">
     <div class="split-txt">
@@ -761,6 +924,8 @@ def pagina_inicio():
   </div>
 </section>
 
+{seccion_reels()}
+
 <section class="section mirada" aria-labelledby="t-mir">
   <div class="wrap split split--rev">
     <div class="split-media reveal">
@@ -781,6 +946,8 @@ def pagina_inicio():
     </div>
   </div>
 </section>
+
+{comparador("microblading", "Cejas que cambian una mirada", "Microblading pelo a pelo: desliza sobre cada foto para comparar el antes y el después de clientas reales.")}
 
 <section class="section section--bone" id="servicios" aria-labelledby="t-serv">
   <div class="wrap">
@@ -832,7 +999,7 @@ def pagina_inicio():
 <section class="gift-band" aria-labelledby="t-gift">
   <div class="wrap gift-in">
     <div class="gift-card reveal" aria-hidden="true">
-      <img src="assets/img/brand/logo-negro.png" alt="">
+      <img src="assets/img/brand/logo-tinta.svg" alt="">
       <span>Tarjeta regalo</span>
     </div>
     <div>
@@ -917,6 +1084,104 @@ def pagina_servicios():
                   "servicios", cuerpo)
 
 
+# ------------------------------------------------------------------ verónica y su equipo
+def pagina_equipo():
+    h_ = hero("el-centro", "El centro · Quién te cuida", "Verónica y su equipo",
+              "Un salón pequeñito con un equipo cercano, detallista y con muchas ganas cada día. Estas son las manos que cuidan de ti.",
+              ctas_cita("¡Hola Vero! Me gustaría pedir cita contigo.", ("Conoce el salón", "el-centro.html")))
+    v = EQUIPO[0]
+    f_v = foto_equipo(v["foto"])
+    retrato = (f'<figure class="frame retrato"><img src="{f_v}" alt="{e(v["nombre"])}" loading="lazy"></figure>' if f_v
+               else hueco_retrato("Retrato de Verónica") if MODO_DEMO else
+               f'<figure class="frame"><img src="{foto("local-pared-mirada")}" alt="" loading="lazy"></figure>')
+    pend = '<em class="pendiente">dato pendiente</em>' if MODO_DEMO else ""
+    linea = [
+        ("La vocación", "Una idea de negocio que nace de la pasión por la profesión: trabajar la estética de cada persona cuidando con esmero cada zona tratada."),
+        ("La formación", "Técnica en Estética Integral y Decorativa. Uñas, mirada, depilación, cabina y maquillaje bajo un mismo techo."),
+        ("La calle Cruz", f"Abre su salón en el local 8 de la calle Cruz, junto a José Fariña. {pend}"),
+        ("Hoy", "Más de 800 trabajos compartidos en Instagram, 5,0 ★ en Google y clientas que llevan casi una década con ella."),
+    ]
+    tl = "".join(f'<li class="tl-item reveal"><span class="tl-year">{i+1:02d}</span><div><h3>{a}</h3><p>{b}</p></div></li>' for i, (a, b) in enumerate(linea))
+    cards = ""
+    for i, m in enumerate(EQUIPO):
+        f_m = foto_equipo(m["foto"])
+        if not f_m and not MODO_DEMO and i:
+            continue
+        img = (f'<img src="{f_m}" alt="{e(m["nombre"])}" loading="lazy">' if f_m
+               else hueco_retrato("Retrato" if i == 0 else "Foto de tu compañera"))
+        nombre = m["nombre"] or ('Nombre de tu compañera' if MODO_DEMO else '')
+        tags = "".join(f"<span>{e(t)}</span>" for t in m["tags"]) or ('<span class="pendiente">Especialidades pendientes</span>' if MODO_DEMO else "")
+        cards += f"""
+<article class="team-card reveal">
+  <div class="team-img">{img}</div>
+  <div class="team-body"><p class="card-cat">{e(m['puesto'])}</p><h3{' class="is-pend"' if not m['nombre'] else ''}>{e(nombre)}</h3>
+  <p>{e(m['texto'])}</p><div class="team-tags">{tags}</div></div>
+</article>"""
+    guia = f"""
+<details class="guia guia--retrato">
+  <summary><span class="guia-ico">{ico('persona')}</span><span><strong>Verónica: así hacemos las fotos del equipo</strong>
+  <small>Una foto real de quien atiende genera muchísima confianza. Toca para ver cómo hacerlas.</small></span><span class="faq-ico">{ico('mas')}</span></summary>
+  <div class="guia-in"><ol class="guia-pasos">
+    <li><b>En el salón, con el logo de la pared detrás</b> o junto a la pared de esmaltes: así se reconoce el centro.</li>
+    <li><b>Luz natural de frente</b> (cerca de la puerta o el escaparate), nunca a contraluz.</li>
+    <li><b>En vertical</b>, de cintura para arriba, con la ropa de trabajo y una sonrisa natural.</li>
+    <li><b>Una foto trabajando</b> (haciendo una manicura o diseñando unas cejas) y otra de todo el equipo junto.</li>
+    <li><b>Envíalas como «documento» por WhatsApp</b> con el nombre y las especialidades de cada una.</li>
+  </ol><p class="guia-nota">{ico('check')} Cada persona debe estar de acuerdo en aparecer en la web.</p></div>
+</details>""" if MODO_DEMO else ""
+    resenas = "".join(resena_card(i) for i in (2, 4, 14))
+    cuerpo = f"""{h_}
+<section class="section" aria-labelledby="t-vero">
+  <div class="wrap split">
+    <div class="split-media reveal">{retrato}</div>
+    <div class="split-txt prose">
+      <p class="eyebrow">La fundadora</p>
+      <h2 id="t-vero" class="h2">{e(v['nombre'])}</h2>
+      <p class="sign">{e(v['puesto'])}</p>
+      <p>Verónica es técnica en estética integral y decorativa, y el alma de este salón «pequeñito pero muy acogedor» de la calle Cruz. Su idea fue siempre la misma: ofrecer cada servicio con el máximo esfuerzo, profesionalidad y muchas ganas, con un trato cercano y personalizado.</p>
+      <p>Las clientas la llaman Vero. Muchas llevan años con ella —«llevo 9 años con Vero y no hay otro sitio mejor», escribe una— y vuelven por lo mismo: la amabilidad, el cuidado extremo de cada detalle y unas manos que, como dicen otras, «son unas artistas».</p>
+      <blockquote class="pull">Ponemos el máximo esfuerzo, profesionalidad y muchas ganas cada día.</blockquote>
+      <div class="team-tags">{''.join(f'<span>{e(t)}</span>' for t in v['tags'])}</div>
+    </div>
+  </div>
+</section>
+<section class="section section--bone" aria-labelledby="t-tray">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">Trayectoria</p><h2 id="t-tray" class="h2">De la vocación al salón</h2></div>
+    <ol class="timeline">{tl}</ol>
+  </div>
+</section>
+<section class="section" aria-labelledby="t-team">
+  <div class="wrap">
+    <div class="sec-head"><p class="eyebrow">«Las chicas»</p><h2 id="t-team" class="h2">El equipo</h2>
+    <p class="lead">Así nos llaman en las reseñas. Un equipo pequeño en el que cada clienta es conocida por su nombre.</p></div>
+    <div class="team">{cards}</div>
+    {guia}
+  </div>
+</section>
+<section class="section section--ink salon-vid" aria-labelledby="t-dia">
+  <div class="wrap split">
+    <div class="split-txt prose">
+      <p class="eyebrow eyebrow--light">El día a día</p>
+      <h2 id="t-dia" class="h2">Manos a la obra</h2>
+      <p class="lead lead--light">Uñas recién terminadas, diseños de temporada y nuestras frases en el mostrador. Lo que compartimos cada semana en Instagram.</p>
+      <a class="btn btn-ghost-light" href="{N['instagram']}" target="_blank" rel="noopener">{ico('ig')} @verobenitezc</a>
+    </div>
+    <div class="vid-duo">{video("reel-copos-azul", "vid vid--a reveal")}{video("salon-entrada", "vid vid--b reveal")}</div>
+  </div>
+</section>
+<section class="section section--blush" aria-labelledby="t-dicen">
+  <div class="wrap">
+    <div class="sec-head center"><p class="eyebrow">Lo que dicen de ellas</p><h2 id="t-dicen" class="h2">«Vero» y «las chicas»</h2></div>
+    <div class="review-wall review-wall--3">{resenas}</div>
+  </div>
+</section>
+{cta_final('¿Te ponemos guapa?', 'Escríbenos y reservamos tu cita con Verónica y su equipo.')}"""
+    return pagina("nosotras.html", "Verónica y su equipo · Estética Verónica Benítez · Huelva",
+                  "Conoce a Verónica Benítez, técnica en estética integral y decorativa, y al equipo de su salón en la calle Cruz de Huelva.",
+                  "centro", cuerpo)
+
+
 # ------------------------------------------------------------------ el centro
 def pagina_centro():
     h_ = hero("el-centro", "El centro · Nuestro salón", "Pequeñito pero muy acogedor",
@@ -953,6 +1218,17 @@ def pagina_centro():
         <img src="{foto('local-fachada', True)}" alt="Fachada del centro" loading="lazy" class="duo-b">
       </div>
     </div>
+  </div>
+</section>
+<section class="section salon-vid" aria-labelledby="t-tour">
+  <div class="wrap split">
+    <div class="split-txt prose">
+      <p class="eyebrow">Pasa, estás en tu casa</p>
+      <h2 id="t-tour" class="h2">Un paseo por el salón</h2>
+      <p>La puerta roja de la calle Cruz, la mesa de manicura siempre en marcha, el logo en la pared y nuestros carteles. Así es un día cualquiera en Estética Verónica Benítez.</p>
+      <a class="btn btn-ink" href="nosotras.html">Conoce al equipo {ico('flecha')}</a>
+    </div>
+    <div class="vid-duo">{video("salon-entrada", "vid vid--a reveal")}{video("salon-frases", "vid vid--b reveal")}</div>
   </div>
 </section>
 <section class="section section--ink" aria-labelledby="t-val">
@@ -1251,7 +1527,7 @@ def pagina_404():
     cuerpo = f"""
 <section class="section notfound">
   <div class="wrap center">
-    <img src="assets/img/brand/logo-negro.png" alt="" class="nf-logo">
+    <img src="assets/img/brand/logo-tinta.svg" alt="" class="nf-logo">
     <h1 class="h2">Esta página se ha ido a hacerse las uñas</h1>
     <p class="lead">No la encontramos, pero todo lo demás sigue en su sitio.</p>
     <div class="btn-row center"><a class="btn btn-ink" href="index.html">Volver al inicio</a><a class="btn btn-outline" href="servicios.html">Ver servicios</a></div>
@@ -1263,5 +1539,5 @@ def pagina_404():
 if __name__ == "__main__":
     hechas = [pagina_inicio(), pagina_servicios()]
     hechas += [pagina_servicio(s) for s in SERVICIOS]
-    hechas += [pagina_centro(), pagina_galeria(), pagina_opiniones(), pagina_regalo(), pagina_ubicacion(), pagina_contacto(), pagina_404()]
+    hechas += [pagina_equipo(), pagina_centro(), pagina_galeria(), pagina_opiniones(), pagina_regalo(), pagina_ubicacion(), pagina_contacto(), pagina_404()]
     print(f"{len(hechas)} páginas generadas")
