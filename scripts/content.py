@@ -9,6 +9,8 @@ Comercio Minorista del Ayuntamiento de Huelva.
 
 NEGOCIO = {
     "nombre": "Estética Verónica Benítez",
+    # dirección pública de la web (para las vistas previas al compartir el enlace)
+    "web": "https://sefiro888.github.io/estetica-veronica-benitez/",
     "titular": "Verónica Benítez Carrasco",
     "direccion": "Calle Cruz, local 8",
     "referencia": "Segunda transversal de la calle José Fariña",

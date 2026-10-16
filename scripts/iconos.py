@@ -8,7 +8,7 @@ import json
 import re
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
 B = ROOT / "assets" / "img" / "brand"
@@ -68,32 +68,48 @@ def iconos():
 
 
 def og():
+    """1200×630 con todo lo importante en el cuadrado central (WhatsApp recorta a veces en cuadrado)."""
     W, H = 1200, 630
     im = Image.new("RGBA", (W, H), TINTA + (255,))
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ImageDraw.Draw(glow).ellipse((-150, 60, 650, 640), fill=ROSA + (60,))
-    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(110)))
-    # columnas de fotos inclinadas a la derecha (como la cabecera de la web)
-    capa = Image.new("RGBA", (900, 1100), (0, 0, 0, 0))
-    cols = [["unas-placa-logo", "lifting-4", "unas-leopardo"], ["unas-arte-turquesa", "microblading-2", "unas-celeste-perlas"],
-            ["unas-fucsia-ondas", "unas-pastel-dorado", "lifting-1"]]
-    for c, fotos in enumerate(cols):
-        y = -120 + (c % 2) * 150
-        for f in fotos:
-            ph = ImageOps.fit(Image.open(F / "sm" / f"{f}.webp").convert("RGB"), (260, 325), Image.LANCZOS)
-            m = Image.new("L", ph.size, 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, 259, 324), 22, fill=255)
-            ph = ph.convert("RGBA"); ph.putalpha(m)
-            capa.alpha_composite(ph, (c * 285, y)); y += 345
-    capa = capa.rotate(8, resample=Image.BICUBIC, expand=False)
-    fundido = Image.linear_gradient("L").rotate(90).resize(capa.size)
-    capa.putalpha(Image.composite(capa.getchannel("A"), Image.new("L", capa.size, 0), ImageOps.invert(fundido).point(lambda v: min(255, v * 2))))
-    im.alpha_composite(capa, (560, -230))
-    logo = Image.open(B / "logo-sin-marco-claro.png").convert("RGBA"); logo.thumbnail((440, 330), Image.LANCZOS)
-    im.alpha_composite(logo, (70, 78))
+    ImageDraw.Draw(glow).ellipse((300, -40, 900, 560), fill=ROSA + (55,))
+    im.alpha_composite(glow.filter(ImageFilter.GaussianBlur(120)))
+
+    def columnas(fotos_cols, ancho):
+        capa = Image.new("RGBA", (ancho, 1150), (0, 0, 0, 0))
+        for c, fotos in enumerate(fotos_cols):
+            y = -60 + (c % 2) * 170
+            for f in fotos:
+                ph = ImageOps.fit(Image.open(F / "sm" / f"{f}.webp").convert("RGB"), (230, 288), Image.LANCZOS).convert("RGBA")
+                m = Image.new("L", ph.size, 0); ImageDraw.Draw(m).rounded_rectangle((0, 0, 229, 287), 20, fill=255)
+                ph.putalpha(m)
+                capa.alpha_composite(ph, (12 + c * 248, y)); y += 306
+        return capa.rotate(7, resample=Image.BICUBIC)
+
+    def funde(capa, hacia_derecha):
+        g = Image.linear_gradient("L").rotate(90 if hacia_derecha else -90).resize(capa.size)
+        g = g.point(lambda v: max(0, min(255, int((v - 40) * 1.6))))
+        capa.putalpha(ImageChops.multiply(capa.getchannel("A"), g))
+        return capa
+
+    izq = funde(columnas([["unas-leopardo", "lifting-4", "unas-celeste-perlas"], ["unas-arte-turquesa", "unas-pastel-dorado", "microblading-2"]], 520), False)
+    der = funde(columnas([["unas-fucsia-ondas", "microblading-3", "unas-lila-motas"], ["unas-placa-logo", "lifting-1", "unas-corazones"]], 520), True)
+    im.alpha_composite(izq, (-150, -260))
+    im.alpha_composite(der, (W - 370, -260))
+
+    logo = Image.open(B / "logo-sin-marco-claro.png").convert("RGBA"); logo.thumbnail((430, 300), Image.LANCZOS)
+    im.alpha_composite(logo, ((W - logo.width) // 2, 62))
     d = ImageDraw.Draw(im)
-    d.text((72, 445), "Uñas · Pestañas · Cejas · Depilación · Faciales", font=fuente(["georgiai.ttf"], 30), fill=(239, 200, 180))
-    d.text((72, 497), "Calle Cruz, 8 · Huelva   ·   5,0 ★ en Google", font=fuente(["segoeui.ttf", "arial.ttf"], 24), fill=(205, 188, 178))
-    d.rounded_rectangle((72, 548, 72 + 330, 548 + 4), 2, fill=ROSA)
+    l1, f1 = "Uñas · Pestañas · Cejas · Depilación", fuente(["georgiai.ttf"], 31)
+    w1 = d.textlength(l1, font=f1)
+    d.text(((W - w1) / 2, 405), l1, font=f1, fill=(239, 200, 180))
+    f2, fs = fuente(["segoeui.ttf", "arial.ttf"], 24), fuente(["seguisym.ttf"], 24)
+    partes = [("Calle Cruz, 8 · Huelva   ·   5,0 ", f2, (210, 194, 184)), ("★★★★★", fs, (239, 200, 180)), (" en Google", f2, (210, 194, 184))]
+    total = sum(d.textlength(t, font=f) for t, f, _ in partes)
+    x = (W - total) / 2
+    for t, f, c in partes:
+        d.text((x, 462), t, font=f, fill=c); x += d.textlength(t, font=f)
+    d.rounded_rectangle((W / 2 - 90, 520, W / 2 + 90, 523), 2, fill=ROSA)
     im.convert("RGB").save(B / "og.jpg", quality=88)
 
 

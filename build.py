@@ -20,7 +20,7 @@ LOGO = json.loads((ROOT / "scripts" / "_logo_partes.json").read_text(encoding="u
 AD = ROOT / "assets" / "img" / "antes-despues"
 EQ = ROOT / "assets" / "img" / "equipo"
 
-VERSION = "3"
+VERSION = "4"
 IA = ROOT / "assets" / "img" / "ia"
 e = escape
 MSG = "¡Hola Vero! Me gustaría pedir cita."
@@ -450,10 +450,17 @@ def pagina(archivo, titulo, desc, activo, cuerpo, og="assets/img/brand/og.jpg", 
 <meta property="og:locale" content="es_ES">
 <meta property="og:title" content="{e(titulo)}">
 <meta property="og:description" content="{e(desc)}">
-<meta property="og:image" content="{og}">
+<meta property="og:url" content="{N['web']}{'' if archivo == 'index.html' else archivo}">
+<meta property="og:image" content="{N['web']}{og}">
+<meta property="og:image:secure_url" content="{N['web']}{og}">
+<meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo de Estética Verónica Benítez con fotos de uñas, pestañas y cejas">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{e(titulo)}">
+<meta name="twitter:description" content="{e(desc)}">
+<meta name="twitter:image" content="{N['web']}{og}">
 <link rel="icon" href="assets/img/brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/img/brand/favicon.png" type="image/png" sizes="64x64">
 <link rel="manifest" href="site.webmanifest">
