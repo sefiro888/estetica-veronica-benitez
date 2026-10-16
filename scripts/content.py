@@ -1012,3 +1012,29 @@ EQUIPO = [
      "texto": "Nombre, especialidades y una frase suya. Una foto real del equipo genera muchísima confianza.",
      "tags": []},
 ]
+
+# Perfil de Instagram (datos públicos de @verobenitezc, octubre 2026)
+IG_PERFIL = {
+    "usuario": "verobenitezc",
+    "nombre": "ESTÉTICA VERÓNICA BENÍTEZ",
+    "publicaciones": "+800", "seguidores": "+500",
+    "bio": ["Técnica en Estética Integral y Decorativa 💅♥", "Depilación tradicional y láser diodo",
+            "Manicura y pedicura · Microblading", "Tratamientos facial y corporal"],
+}
+# Destacados reales (portada elegida entre sus fotos)
+IG_DESTACADOS = [
+    ("Novedad", "unas-placa-logo", "17848773753146239"),
+    ("Nuestros amores", "unas-corazones", "18237914029017202"),
+    ("Acry", "unas-nude-almendra", "17951253655900975"),
+    ("Gel", "unas-turquesa", "17880632537320390"),
+    ("Acrygel", "unas-ombre-rojo", "17906702017944933"),
+    ("Acrílico", "unas-leopardo", "17940918832522803"),
+    ("Tratamientos", "selvert-mascara-led", "17870175176482747"),
+]
+# Publicaciones reales: (foto, código de la publicación)
+IG_POSTS = [
+    ("unas-leopardo", "DZLio_UiKM4"), ("lifting-1", "CiATYXFqxqp"), ("unas-arte-turquesa", "DcT3MSRCPGF"),
+    ("unas-pastel-dorado", "DZ8b4FzkWk5"), ("unas-corazones", "DZLiP6JiLXQ"), ("unas-fucsia-ondas", "Da0-vs6EYaX"),
+    ("unas-celeste-perlas", "DEXWJOUK5aH"), ("unas-azul-abstracto", "DZLhsXVCAuk"), ("unas-placa-logo", "Cqm2fjyKhm0"),
+]
+FB_PERFIL = {"seguidores": "+800", "recomienda": "96 %", "opiniones": 23}

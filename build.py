@@ -14,13 +14,13 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "scripts"))
 from content import (NEGOCIO as N, HORARIO, DIAS, RESENAS, CATEGORIAS, FRASES,  # noqa: E402
                      SERVICIOS, SERV, FAQ_GENERAL, QUIZ, MODO_DEMO, COMPARA, TITULOS_AD,
-                     REELS, VIDEO_SERVICIO, EQUIPO)
+                     REELS, VIDEO_SERVICIO, EQUIPO, IG_PERFIL, IG_DESTACADOS, IG_POSTS, FB_PERFIL)
 
 LOGO = json.loads((ROOT / "scripts" / "_logo_partes.json").read_text(encoding="utf-8"))
 AD = ROOT / "assets" / "img" / "antes-despues"
 EQ = ROOT / "assets" / "img" / "equipo"
 
-VERSION = "7"
+VERSION = "8"
 IA = ROOT / "assets" / "img" / "ia"
 e = escape
 MSG = "¡Hola Vero! Me gustaría pedir cita."
@@ -76,6 +76,56 @@ def ig_color(cls="ig-color", gid="igG"):
             '<rect x="5.2" y="5.2" width="13.6" height="13.6" rx="4.2" fill="none" stroke="#fff" stroke-width="1.8"/>'
             '<circle cx="12" cy="12" r="3.3" fill="none" stroke="#fff" stroke-width="1.8"/>'
             '<circle cx="16.5" cy="7.5" r="1.05" fill="#fff"/></svg>')
+
+
+def fb_color(cls="fb-color"):
+    return (f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#1877F2"/>'
+            '<path d="M13.4 19.5v-6h2l.3-2.4h-2.3V9.6c0-.7.2-1.2 1.2-1.2h1.2V6.3a16 16 0 0 0-1.8-.1c-1.8 0-3 1.1-3 3.1v1.8h-2v2.4h2v6Z" fill="#fff"/></svg>')
+
+
+def seccion_redes(tid="t-redes"):
+    P = IG_PERFIL
+    destacados = "".join(
+        f'<a class="igc-hl" href="https://www.instagram.com/stories/highlights/{i}/" target="_blank" rel="noopener">'
+        f'<span class="igc-hl-img"><img src="{foto(f, True)}" alt="" loading="lazy"></span><small>{e(t)}</small></a>'
+        for t, f, i in IG_DESTACADOS)
+    posts = "".join(
+        f'<a class="igc-post" href="https://www.instagram.com/p/{c}/" target="_blank" rel="noopener" aria-label="Ver publicación en Instagram">'
+        f'<img src="{foto(f, True)}" alt="Publicación de @verobenitezc" loading="lazy"><span>{ico("ig")}</span></a>'
+        for f, c in IG_POSTS)
+    bio = "".join(f"<span>{e(b)}</span>" for b in P["bio"])
+    return f"""
+<section class="section redes" aria-labelledby="{tid}">
+  <div class="wrap redes-grid">
+    <div class="redes-txt">
+      <p class="eyebrow">Síguenos</p>
+      <h2 id="{tid}" class="h2">Todo lo nuevo, primero en nuestras redes</h2>
+      <p class="lead">Cada semana subimos uñas recién terminadas, diseños de temporada, novedades y sorteos. Síguenos y no te pierdas nada.</p>
+      <div class="redes-btns">
+        <a class="btn btn-ig" href="{N['instagram']}" target="_blank" rel="noopener">{ico('ig')} Seguir a @{P['usuario']}</a>
+        <a class="btn btn-fb" href="{N['facebook']}" target="_blank" rel="noopener">{ico('fb')} Facebook</a>
+      </div>
+      <a class="fb-card reveal" href="{N['facebook']}" target="_blank" rel="noopener">
+        {fb_color('fb-card-ico')}
+        <span><strong>Estética Verónica Benítez</strong><small>{FB_PERFIL['seguidores']} seguidores · el {FB_PERFIL['recomienda']} la recomienda ({FB_PERFIL['opiniones']} opiniones)</small></span>
+        {ico('flecha')}
+      </a>
+    </div>
+    <div class="igc reveal">
+      <div class="igc-top">
+        <a class="igc-avatar" href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Perfil de Instagram"><span><img src="assets/img/brand/logo-sin-marco-tinta.svg" alt=""></span></a>
+        <div class="igc-stats">
+          <a href="{N['instagram']}" target="_blank" rel="noopener" class="igc-user">{ig_color(gid="igCard")}@{P['usuario']}</a>
+          <div class="igc-nums"><span><b>{P['publicaciones']}</b> publicaciones</span><span><b>{P['seguidores']}</b> seguidores</span><span><b>5,0 ★</b> Google</span></div>
+        </div>
+      </div>
+      <p class="igc-bio"><strong>{e(P['nombre'])}</strong>{bio}</p>
+      <a class="igc-follow" href="{N['instagram']}" target="_blank" rel="noopener">Seguir</a>
+      <div class="igc-hls">{destacados}</div>
+      <div class="igc-grid">{posts}</div>
+    </div>
+  </div>
+</section>"""
 
 
 def nav_carrusel():
@@ -143,9 +193,9 @@ def header(activo):
     <span class="estado" data-estado><span class="dot"></span><span class="estado-txt">Consultando horario…</span></span>
     <span class="topbar-mid">Calle Cruz, local 8 · Huelva · Solo con cita previa</span>
     <span class="topbar-right">
-      <a href="tel:{N['movil_href']}">{ico('tel')} {N['movil']}</a>
-      <a href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Instagram">{ico('ig')}</a>
-      <a href="{N['facebook']}" target="_blank" rel="noopener" aria-label="Facebook">{ico('fb')}</a>
+      <a class="tb-tel" href="tel:{N['movil_href']}">{ico('tel')} {N['movil']}</a>
+      <a class="tb-red tb-ig" href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Instagram @verobenitezc">{ig_color(gid="igTop")}<span>@verobenitezc</span></a>
+      <a class="tb-red tb-fb" href="{N['facebook']}" target="_blank" rel="noopener" aria-label="Facebook">{fb_color()}<span>Facebook</span></a>
     </span>
   </div>
 </div>
@@ -421,9 +471,9 @@ def footer():
       <img src="assets/img/brand/logo-claro.svg" alt="Estética Verónica Benítez" class="footer-logo" loading="lazy">
       <p>Salón de estética integral y decorativa en Huelva. Pequeñito pero muy acogedor: uñas, mirada, depilación, faciales y maquillaje con trato cercano y personalizado.</p>
       <div class="footer-social">
-        <a href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Instagram">{ico('ig')}</a>
-        <a href="{N['facebook']}" target="_blank" rel="noopener" aria-label="Facebook">{ico('fb')}</a>
-        <a href="{wa('¡Hola Vero!')}" target="_blank" rel="noopener" aria-label="WhatsApp">{ico('wa')}</a>
+        <a class="fs-ig" href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Instagram">{ig_color(gid="igFoot")}</a>
+        <a class="fs-fb" href="{N['facebook']}" target="_blank" rel="noopener" aria-label="Facebook">{fb_color()}</a>
+        <a class="fs-wa" href="{wa('¡Hola Vero!')}" target="_blank" rel="noopener" aria-label="WhatsApp">{ico('wa')}</a>
       </div>
     </div>
     <div><p class="f-title">Manos y pies</p><ul>{serv('unas')}</ul></div>
@@ -1052,6 +1102,8 @@ def pagina_inicio():
   </div>
 </section>
 
+{seccion_redes()}
+
 {carrusel_resenas()}
 
 <section class="section" aria-labelledby="t-faqh">
@@ -1528,6 +1580,7 @@ def pagina_contacto():
     {canales}
   </div>
 </section>
+{seccion_redes("t-redes-c")}
 <section class="section section--bone" aria-labelledby="t-cita">
   <div class="wrap wizard-wrap">
     <div class="wizard-side">

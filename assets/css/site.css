@@ -1111,3 +1111,87 @@ video{display:block;width:100%;height:100%;object-fit:cover;background:var(--ink
   .car-dots i.is-on{width:22px;background:var(--brass-l)}
 }
 @media (max-width:700px){.actionbar .ig-color{width:22px;height:22px}}
+
+/* =====================================================================
+   Redes sociales: franja superior con color, tarjeta de Instagram
+   ===================================================================== */
+.topbar{background:linear-gradient(90deg,rgba(23,17,15,.85),rgba(70,44,36,.85))}
+.topbar-right{gap:.55rem}
+.topbar .tb-tel{background:linear-gradient(135deg,#f3cfbd,#c28d76);color:var(--ink);font-weight:600;padding:.38rem .8rem;border-radius:99px;box-shadow:0 6px 16px -8px rgba(194,141,118,.9)}
+.topbar .tb-tel .ico{width:1em;height:1em}
+.topbar .tb-red{display:inline-flex;align-items:center;gap:.45rem;padding:.26rem .75rem .26rem .28rem;border-radius:99px;background:rgba(251,246,242,.1);border:1px solid rgba(251,246,242,.2);font-weight:600;transition:background .3s,transform .3s}
+.topbar .tb-red:hover{background:rgba(251,246,242,.2);transform:translateY(-1px)}
+.topbar .ig-color,.topbar .fb-color{width:22px;height:22px}
+.fb-color{display:block;flex:none}
+
+/* pie: iconos a color */
+.footer-social a{width:46px;height:46px;border:0;background:rgba(251,246,242,.08);transition:transform .3s,background .3s}
+.footer-social a:hover{transform:translateY(-3px);background:rgba(251,246,242,.16)}
+.footer-social .ig-color,.footer-social .fb-color{width:26px;height:26px}
+.footer-social .fs-wa{background:#25D366;color:#fff}
+.footer-social .fs-wa .ico{width:22px;height:22px}
+
+/* botones con los colores oficiales */
+.btn-ig{background:linear-gradient(45deg,#f09433,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888);color:#fff;border:0}
+.btn-fb{background:#1877F2;color:#fff;border:0}
+.btn-ig:hover,.btn-fb:hover{box-shadow:0 14px 30px -12px rgba(188,24,136,.6)}
+
+/* sección redes */
+.redes{background:radial-gradient(70% 90% at 85% 30%,rgba(214,36,159,.07),transparent 60%),radial-gradient(60% 80% at 10% 80%,rgba(24,119,242,.06),transparent 60%),var(--paper)}
+.redes-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,6vw,5rem);align-items:center}
+.redes-btns{display:flex;flex-wrap:wrap;gap:.7rem;margin:1.6rem 0}
+.fb-card{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border-radius:var(--r);background:var(--white);border:1px solid var(--line);text-decoration:none;box-shadow:var(--sh);max-width:460px;transition:transform .35s var(--ease)}
+.fb-card:hover{transform:translateY(-3px)}
+.fb-card-ico{width:44px;height:44px;flex:none}
+.fb-card span{flex:1}
+.fb-card strong{display:block;font:500 1.2rem/1.2 var(--f-display)}
+.fb-card small{color:var(--muted);font-size:.84rem}
+.fb-card>.ico{color:#1877F2}
+
+/* tarjeta tipo perfil de Instagram */
+.igc{background:var(--white);border:1px solid var(--line);border-radius:28px;padding:1.6rem;box-shadow:var(--sh-lg);max-width:560px;justify-self:center;width:100%}
+.igc-top{display:flex;align-items:center;gap:1.3rem}
+.igc-avatar{flex:none;width:92px;height:92px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:block}
+.igc-avatar span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#fff;border:3px solid #fff}
+.igc-avatar img{width:74%;height:auto}
+.igc-stats{flex:1;min-width:0}
+.igc-user{display:inline-flex;align-items:center;gap:.45rem;font:600 1.05rem var(--f-body);color:var(--ink);text-decoration:none}
+.igc-user .ig-color{width:22px;height:22px}
+.igc-nums{display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;margin-top:.45rem;font-size:.86rem;color:var(--muted)}
+.igc-nums b{color:var(--ink);font-weight:700}
+.igc-bio{margin:1rem 0 0;display:flex;flex-direction:column;font-size:.9rem;line-height:1.5;color:var(--text)}
+.igc-bio strong{font-weight:700;font-size:.86rem;letter-spacing:.02em}
+.igc-follow{display:block;margin:1rem 0 1.2rem;text-align:center;padding:.6rem;border-radius:10px;background:#0095f6;color:#fff;font-weight:600;font-size:.92rem;text-decoration:none}
+.igc-follow:hover{background:#1877f2}
+.igc-hls{display:flex;gap:.9rem;overflow-x:auto;scrollbar-width:none;padding:.2rem .1rem 1rem;margin:0 -.1rem}
+.igc-hls::-webkit-scrollbar{display:none}
+.igc-hl{flex:none;display:flex;flex-direction:column;align-items:center;gap:.35rem;text-decoration:none;width:64px}
+.igc-hl-img{width:62px;height:62px;border-radius:50%;padding:2px;border:1px solid #dbdbdb;background:#fff}
+.igc-hl-img img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.igc-hl small{font-size:.68rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.igc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:12px;overflow:hidden}
+.igc-post{position:relative;display:block;aspect-ratio:1;overflow:hidden;background:var(--bone)}
+.igc-post img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.igc-post span{position:absolute;inset:0;display:grid;place-items:center;background:rgba(23,17,15,.35);color:#fff;opacity:0;transition:opacity .3s}
+.igc-post:hover img{transform:scale(1.06)}
+.igc-post:hover span{opacity:1}
+
+@media (max-width:1020px){
+  .redes-grid{grid-template-columns:1fr}
+  .topbar .tb-red span{display:none}
+  .topbar .tb-red{padding:.28rem}
+}
+@media (max-width:700px){
+
+  .topbar-right a:first-child{display:none}
+  .topbar .ig-color,.topbar .fb-color{width:20px;height:20px}
+  .igc{padding:1.1rem;border-radius:22px}
+  .igc-avatar{width:72px;height:72px}
+  .igc-top{gap:1rem}
+  .igc-nums{gap:.2rem .8rem;font-size:.8rem}
+  .redes-btns .btn{flex:1 1 auto}
+}
+.redes-grid>*{min-width:0}
+@media (max-width:1020px){.redes-grid{grid-template-columns:minmax(0,1fr)}}
+.igc{min-width:0}
+.igc-hls{max-width:100%}
