@@ -1085,3 +1085,29 @@ video{display:block;width:100%;height:100%;object-fit:cover;background:var(--ink
 }
 
 @media (max-width:700px){.ba-slot+.ba-slot{display:none}.ba-slot-in{aspect-ratio:16/10}}
+
+/* =====================================================================
+   Instagram en la barra fija y botón flotante · navegación de carruseles
+   ===================================================================== */
+.ig-color{display:block;width:1.6rem;height:1.6rem;flex:none}
+.ig-float{position:fixed;right:22px;bottom:86px;z-index:60;display:flex;align-items:center;gap:.55rem;padding:.5rem 1rem .5rem .5rem;border-radius:99px;
+  background:var(--white);color:var(--ink);text-decoration:none;font-weight:600;font-size:.82rem;box-shadow:0 14px 34px -12px rgba(0,0,0,.45);
+  transform:translateY(170px);transition:transform .5s var(--ease) .06s}
+.ig-float.is-in{transform:none}
+.ig-float .ig-color{width:32px;height:32px}
+.ig-float:hover{transform:translateY(-2px)}
+.car-nav{display:none}
+@media (max-width:700px){
+  .ig-float{display:none}
+  .actionbar{grid-template-columns:1fr 1.2fr 1fr 1fr;gap:.3rem}
+  .actionbar a{font-size:.6rem;letter-spacing:.08em;padding:.45rem .2rem}
+  .actionbar .ig-color{width:24px;height:24px}
+  .reels{grid-auto-columns:64%}
+  .car-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.2rem}
+  .car-nav-btn{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-light);background:rgba(251,246,242,.06);color:var(--paper);display:grid;place-items:center;transition:opacity .3s}
+  .car-nav-btn[disabled]{opacity:.3}
+  .car-dots{display:flex;align-items:center;gap:.45rem}
+  .car-dots i{display:block;width:7px;height:7px;border-radius:99px;background:rgba(251,246,242,.3);transition:width .3s,background .3s}
+  .car-dots i.is-on{width:22px;background:var(--brass-l)}
+}
+@media (max-width:700px){.actionbar .ig-color{width:22px;height:22px}}

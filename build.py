@@ -20,7 +20,7 @@ LOGO = json.loads((ROOT / "scripts" / "_logo_partes.json").read_text(encoding="u
 AD = ROOT / "assets" / "img" / "antes-despues"
 EQ = ROOT / "assets" / "img" / "equipo"
 
-VERSION = "6"
+VERSION = "7"
 IA = ROOT / "assets" / "img" / "ia"
 e = escape
 MSG = "¡Hola Vero! Me gustaría pedir cita."
@@ -64,6 +64,25 @@ ICONOS = {
 
 def ico(n, cls="ico"):
     return f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true">{ICONOS[n]}</svg>'
+
+
+def ig_color(cls="ig-color", gid="igG"):
+    """Logotipo de Instagram con su degradado de marca."""
+    return (f'<svg class="{cls}" viewBox="0 0 24 24" aria-hidden="true"><defs>'
+            f'<radialGradient id="{gid}" cx="30%" cy="107%" r="150%"><stop offset="0" stop-color="#fdf497"/>'
+            '<stop offset=".05" stop-color="#fdf497"/><stop offset=".45" stop-color="#fd5949"/>'
+            '<stop offset=".6" stop-color="#d6249f"/><stop offset=".9" stop-color="#285AEB"/></radialGradient></defs>'
+            f'<rect x="1" y="1" width="22" height="22" rx="6.5" fill="url(#{gid})"/>'
+            '<rect x="5.2" y="5.2" width="13.6" height="13.6" rx="4.2" fill="none" stroke="#fff" stroke-width="1.8"/>'
+            '<circle cx="12" cy="12" r="3.3" fill="none" stroke="#fff" stroke-width="1.8"/>'
+            '<circle cx="16.5" cy="7.5" r="1.05" fill="#fff"/></svg>')
+
+
+def nav_carrusel():
+    return (f'<div class="car-nav" data-car-nav><button type="button" class="car-nav-btn" data-prev aria-label="Anterior">{ico("flecha", "ico flip")}</button>'
+            f'<span class="car-dots" data-dots></span>'
+            f'<button type="button" class="car-nav-btn" data-next aria-label="Siguiente">{ico("flecha")}</button></div>')
+
 
 
 def estrellas(n=5):
@@ -427,8 +446,10 @@ def footer():
 <nav class="actionbar" aria-label="Acciones rápidas">
   <a href="tel:{N['movil_href']}">{ico('tel')}<span>Llamar</span></a>
   <a href="{wa(MSG)}" target="_blank" rel="noopener" class="ab-main">{ico('wa')}<span>Cita</span></a>
+  <a href="{N['instagram']}" target="_blank" rel="noopener" class="ab-ig" aria-label="Instagram de Estética Verónica Benítez">{ig_color(gid="igBar")}<span>Instagram</span></a>
   <a href="{N['maps_dir']}" target="_blank" rel="noopener">{ico('pin')}<span>Llegar</span></a>
 </nav>
+<a class="ig-float" href="{N['instagram']}" target="_blank" rel="noopener" aria-label="Síguenos en Instagram">{ig_color(gid="igFloat")}<span>@verobenitezc</span></a>
 <a class="wa-float" href="{wa(MSG)}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">{ico('wa')}<span>¿Te damos cita?</span></a>
 <div class="lightbox" data-lightbox hidden><button class="lb-close" aria-label="Cerrar">{ico('x')}</button><button class="lb-prev" aria-label="Anterior">{ico('flecha', 'ico flip')}</button><img alt=""><button class="lb-next" aria-label="Siguiente">{ico('flecha')}</button><p class="lb-cap"></p></div>"""
 
@@ -645,7 +666,8 @@ def seccion_reels():
       <a class="btn btn-ghost-light" href="{N['instagram']}" target="_blank" rel="noopener">{ico('ig')} Ver más reels</a>
     </div>
     <p class="swipe-hint">Desliza {ico('flecha')}</p>
-    <div class="reels">{vids}</div>
+    <div class="reels" data-swipe>{vids}</div>
+    {nav_carrusel()}
   </div>
 </section>"""
 

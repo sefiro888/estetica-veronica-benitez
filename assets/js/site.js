@@ -315,3 +315,37 @@
     addEventListener("pageshow", () => document.body.classList.remove("is-leaving"));
   }
 })();
+
+/* Estética Verónica Benítez · flechas y puntos de los carruseles + Instagram flotante */
+(() => {
+  "use strict";
+  const $ = (s, c = document) => c.querySelector(s);
+  const $$ = (s, c = document) => [...c.querySelectorAll(s)];
+  $$("[data-swipe]").forEach(sw => {
+    const nav = sw.nextElementSibling;
+    if (!nav || !nav.matches("[data-car-nav]")) return;
+    const items = [...sw.children];
+    const dots = $("[data-dots]", nav), prev = $("[data-prev]", nav), next = $("[data-next]", nav);
+    dots.innerHTML = items.map(() => "<i></i>").join("");
+    const ds = [...dots.children];
+    const paso = () => items[0].getBoundingClientRect().width + (parseFloat(getComputedStyle(sw).columnGap) || 12);
+    const act = () => {
+      const fin = sw.scrollLeft + sw.clientWidth >= sw.scrollWidth - 6;
+      const i = fin ? ds.length - 1 : Math.round(sw.scrollLeft / paso());
+      ds.forEach((d, k) => d.classList.toggle("is-on", k === i));
+      prev.disabled = sw.scrollLeft < 6; next.disabled = fin;
+    };
+    const actual = () => Math.max(0, ds.findIndex(d => d.classList.contains("is-on")));
+    const ir = i => sw.scrollTo({ left: Math.max(0, Math.min(items.length - 1, i)) * paso(), behavior: "smooth" });
+    prev.addEventListener("click", () => ir(actual() - 1));
+    next.addEventListener("click", () => ir(actual() + 1));
+    sw.addEventListener("scroll", () => requestAnimationFrame(act), { passive: true });
+    addEventListener("resize", act);
+    act();
+  });
+  const ig = $(".ig-float");
+  if (ig) {
+    const t = () => ig.classList.toggle("is-in", scrollY > 500);
+    addEventListener("scroll", t, { passive: true }); t();
+  }
+})();
