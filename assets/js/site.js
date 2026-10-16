@@ -241,14 +241,50 @@
   setTimeout(() => parpadea(marca), intro && intro.isConnected ? 2300 : 600);
   setInterval(() => { if (!document.hidden) parpadea(marca); }, 9000);
 
-  /* ---------- comparador antes / después ---------- */
+  /* ---------- comparador antes / después ----------
+     Arrastre horizontal en cualquier punto (ratón o dedo), toque para saltar,
+     y teclado con el input oculto. El scroll vertical del móvil sigue libre. */
   $$("[data-ba]").forEach(ba => {
     const r = $(".ba-range", ba);
-    const pon = v => ba.style.setProperty("--pos", v + "%");
-    r.addEventListener("input", () => { ba.classList.remove("is-hint"); pon(r.value); });
+    const pon = v => {
+      v = Math.max(0, Math.min(100, v));
+      ba.style.setProperty("--pos", v + "%");
+      r.value = Math.round(v);
+    };
+    const xa = e => { const b = ba.getBoundingClientRect(); return (e.clientX - b.left) / b.width * 100; };
+    let activo = false, decidido = false, x0 = 0, y0 = 0;
+    ba.addEventListener("pointerdown", e => {
+      if (e.button > 0) return;
+      activo = true; x0 = e.clientX; y0 = e.clientY;
+      ba.classList.remove("is-hint"); ba.classList.add("is-used");
+      decidido = e.pointerType !== "touch";           // con ratón se arrastra al instante
+      if (decidido) { ba.setPointerCapture(e.pointerId); ba.classList.add("is-drag"); pon(xa(e)); }
+    });
+    ba.addEventListener("pointermove", e => {
+      if (!activo) return;
+      if (!decidido) {
+        const dx = Math.abs(e.clientX - x0), dy = Math.abs(e.clientY - y0);
+        if (dx < 5 && dy < 5) return;
+        if (dy > dx) { activo = false; return; }      // gesto vertical: dejar hacer scroll
+        decidido = true; ba.setPointerCapture(e.pointerId); ba.classList.add("is-drag");
+      }
+      e.preventDefault();
+      pon(xa(e));
+    });
+    const fin = e => {
+      if (activo && !decidido && e.type === "pointerup") pon(xa(e));   // toque corto: saltar ahí
+      activo = decidido = false; ba.classList.remove("is-drag");
+    };
+    ba.addEventListener("pointerup", fin);
+    ba.addEventListener("pointercancel", fin);
+    r.addEventListener("input", () => { ba.classList.remove("is-hint"); pon(+r.value); });
     if ("IntersectionObserver" in window && !reduce) {
       const io = new IntersectionObserver(es => es.forEach(e => {
-        if (e.isIntersecting) { ba.classList.add("is-hint"); setTimeout(() => ba.classList.remove("is-hint"), 3200); io.unobserve(ba); }
+        if (e.isIntersecting && !ba.classList.contains("is-used")) {
+          ba.classList.add("is-hint");
+          setTimeout(() => { ba.classList.remove("is-hint"); if (!ba.classList.contains("is-used")) pon(50); }, 2900);
+          io.unobserve(ba);
+        }
       }), { threshold: .6 });
       io.observe(ba);
     }

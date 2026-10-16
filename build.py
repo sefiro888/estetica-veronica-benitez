@@ -20,7 +20,7 @@ LOGO = json.loads((ROOT / "scripts" / "_logo_partes.json").read_text(encoding="u
 AD = ROOT / "assets" / "img" / "antes-despues"
 EQ = ROOT / "assets" / "img" / "equipo"
 
-VERSION = "4"
+VERSION = "6"
 IA = ROOT / "assets" / "img" / "ia"
 e = escape
 MSG = "¡Hola Vero! Me gustaría pedir cita."
@@ -597,7 +597,7 @@ def comparador(slug, titulo_sec="Antes y después", sub=""):
   <div class="wrap">
     <div class="sec-head"><p class="eyebrow">Resultados reales</p><h2 id="t-ad-{slug}" class="h2">{titulo_sec}</h2><p class="lead">{e(sub)}</p></div>
     <div class="ba-grid ba-grid--{len(reales[:3]) or 2}">{items}</div>
-    {guia_fotos(abierta=not reales) if MODO_DEMO else ''}
+    {guia_fotos() if MODO_DEMO else ''}
   </div>
 </section>"""
 

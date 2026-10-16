@@ -1023,3 +1023,65 @@ video{display:block;width:100%;height:100%;object-fit:cover;background:var(--ink
   .vid--b{margin-top:2rem}
 }
 @media (prefers-reduced-motion:reduce){.splash{display:none}}
+
+/* =====================================================================
+   Comparador: gesto propio (sin input encima) y aviso de uso
+   ===================================================================== */
+.ba-slider{touch-action:pan-y;cursor:ew-resize;-webkit-tap-highlight-color:transparent}
+.ba-range{inset:auto 0 0 0;width:100%;height:1px;pointer-events:none}
+.ba-slider:focus-within{outline:2px solid var(--brass);outline-offset:4px}
+.ba-handle i{transition:transform .25s var(--ease)}
+.ba-slider.is-drag .ba-handle i{transform:scale(1.12)}
+.ba-slider::after{content:"Arrastra para comparar";position:absolute;left:50%;top:calc(50% + 34px);transform:translateX(-50%);white-space:nowrap;
+  font:500 .62rem var(--f-label);letter-spacing:.16em;text-transform:uppercase;color:var(--paper);background:rgba(23,17,15,.72);padding:.4rem .7rem;border-radius:99px;
+  pointer-events:none;transition:opacity .4s}
+.ba-slider.is-used::after{opacity:0}
+
+/* =====================================================================
+   Móvil: lectura cómoda, menos movimiento y sin carruseles de texto
+   ===================================================================== */
+@media (max-width:700px){
+  body{font-weight:400;font-size:16.5px;line-height:1.7}
+  .lead{font-weight:400;color:#6b5a52}
+  .lead--light,.section--ink .lead{color:#d9c7bd}
+  .prose p{font-size:1rem}
+
+  /* comparadores uno debajo de otro, sin carrusel */
+  .ba-grid{grid-auto-flow:row;grid-template-columns:1fr;grid-auto-columns:auto;overflow:visible;scroll-snap-type:none;margin-inline:0;padding:0;gap:1.6rem}
+  .ba-lbl{top:.7rem;font-size:.58rem;padding:.35rem .6rem}
+  .ba-lbl--a{left:.7rem}.ba-lbl--d{right:.7rem}
+  .ba-handle i{width:46px;height:46px;margin:-23px 0 0 -23px}
+  .ba-slider figcaption{font-size:1.05rem;padding:2rem 1rem .9rem}
+  .guia summary small{display:none}
+
+  /* beneficios y opciones: lista vertical compacta */
+  .benefs,.opts{grid-auto-flow:row;grid-template-columns:1fr;grid-auto-columns:auto;overflow:visible;scroll-snap-type:none;margin-inline:0;padding:0;gap:.6rem}
+  .swipe-hint:has(+ .benefs),.swipe-hint:has(+ .opts),.swipe-hint:has(+ .benefs--light){display:none}
+  .benef{display:grid;grid-template-columns:2.6rem 1fr;column-gap:.9rem;align-items:start;padding:1.1rem 1.1rem 1.2rem}
+  .benef-n{grid-row:span 2;margin:0;min-height:0;font-size:1.45rem;line-height:1.2}
+  .benef-n .ico{width:24px;height:24px}
+  .benef h3{font-size:1.25rem;margin:0 0 .25rem}
+  .benef p{font-size:.93rem}
+  .opt{padding:1.2rem 1.2rem 1.3rem}
+  .opt p{margin-bottom:.6rem}
+
+  /* menos movimiento para que no maree */
+  .wall{opacity:.5;transform:rotate(-5deg)}
+  .wall-col--0 .wall-track{animation-duration:95s}
+  .wall-col--1 .wall-track{animation-duration:120s}
+  .wall-col--2 .wall-track{animation-duration:85s}
+  .wall-col--3 .wall-track{animation-duration:130s}
+  .hero--wall .hero-title{background:none;-webkit-text-fill-color:currentColor;color:var(--paper);animation:rise 1s var(--ease) forwards}
+  .hero-media img{animation:none}
+  .reveal{transform:translateY(14px)}
+  .cinta-track{animation-duration:70s}
+  .strip-track{animation-duration:110s}
+  .strip--b .strip-track{animation-duration:130s}
+  .cross-track{animation-duration:55s}
+  .strip--a,.strip--b,.cross-words{transform:none}
+  .cross-words span{font-size:1.9rem}
+  .gift-card::after{animation:none}
+  .ba-slot-bar i{animation:none}
+}
+
+@media (max-width:700px){.ba-slot+.ba-slot{display:none}.ba-slot-in{aspect-ratio:16/10}}
